@@ -1,5 +1,7 @@
 const Path = require('path');
 const vuePlugin = require('@vitejs/plugin-vue')
+import wasm from "vite-plugin-wasm";
+import topLevelAwait from "vite-plugin-top-level-await";
 
 const { defineConfig } = require('vite');
 
@@ -17,7 +19,11 @@ const config = defineConfig({
         outDir: Path.join(__dirname, 'build', 'renderer'),
         emptyOutDir: true,
     },
-    plugins: [vuePlugin()],
+    plugins: [
+      vuePlugin(),
+        wasm(),
+        topLevelAwait()
+    ],
 });
 
 module.exports = config;

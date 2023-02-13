@@ -1,10 +1,16 @@
 import {app, BrowserWindow, ipcMain, session} from 'electron';
 import {join} from 'path';
+import {Config} from "./service/config"
+import {App} from "./service/app";
+
+
+const config = new Config()
+const kapp = new App()
 
 function createWindow () {
   const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1024,
+    height: 768,
     webPreferences: {
       preload: join(__dirname, 'preload.js'),
       nodeIntegration: false,
@@ -12,29 +18,29 @@ function createWindow () {
     }
   });
 
+
   if (process.env.NODE_ENV === 'development') {
     const rendererPort = process.argv[2];
     mainWindow.loadURL(`http://localhost:${rendererPort}`);
   }
   else {
-    mainWindow.loadFile(join(app.getAppPath(), 'renderer', 'index.html'));
+    mainWindow.loadFile(join(app.getAppPath(), 'KOALA', 'index.html'));
   }
 }
 
 app.whenReady().then(() => {
   createWindow();
-
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
     callback({
       responseHeaders: {
         ...details.responseHeaders,
-        'Content-Security-Policy': ['script-src \'self\'']
+        'Content-Security-Policy': ['script-src \'self\' \'wasm-unsafe-eval\'']
       }
     })
   })
 
   app.on('activate', function () {
-    // On macOS it's common to re-create a window in the app when the
+    // On macOS, it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow();

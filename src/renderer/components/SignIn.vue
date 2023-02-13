@@ -1,12 +1,22 @@
 <script setup lang="ts">
-const msg = 'Electron + Vue3 template';
+import {useHabery} from "../stores/habery";
+import {useConfig} from "../stores/config";
+
+const msg = 'Koala KERI Wallet';
+const habery = useHabery()
+const config = useConfig()
+
 </script>
 
 <template>
   <div id="hello">
     <img src="https://vuejs.org/images/logo.png">
     <h1>{{ msg }}</h1>
-    <h2>Essential Links</h2>
+    <button type="button" @click="habery.makeHab()">Create Hab</button>
+    <h2>Number of Habs: {{habery.habs.length}}</h2>
+    <ul>
+      <li v-for="hab in habery.habs">{{hab.pre}}</li>
+    </ul>
     <ul>
       <li><a href="https://vuejs.org" target="_blank">Core Docs</a></li>
       <li><a href="https://forum.vuejs.org" target="_blank">Forum</a></li>
